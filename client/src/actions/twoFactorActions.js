@@ -1,7 +1,7 @@
 import Syncano from 'syncano-client';
 import * as actionTypes from '../constants/actionTypes';
 import history from '../utils/history';
-import handle401 from '../utils/helpers';
+import { handle401 } from '../utils/helpers';
 
 const s = new Syncano('winter-morning-7464');
 

@@ -4,7 +4,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'react-proptypes';
 import { registerAction } from '../../actions/authActions';
 import { alertClear } from '../../actions/alertActions';
+import { validateRequired } from '../../utils/helpers';
 import AuthComponent from '../AuthComponent';
+
 /**
  * RegisterPage class declaration
  * @class RegisterPage
@@ -12,18 +14,32 @@ import AuthComponent from '../AuthComponent';
  */
 export class RegisterPage extends Component {
   state = {
-    alertState: {}
+    errors: {}
   };
+
   /**
-   * Handle submit
-   * @method handleSubmit
+   * Check form fields valid
+   * @param {object} userCredentials
+   * @returns {boolean} result
+   */
+  isValid({ username, password }) {
+    const checkRequired = validateRequired({ username, password });
+    if (checkRequired.passes === false) {
+      this.setState({ errors: checkRequired.validateMessages });
+    }
+    return checkRequired.passes;
+  }
+
+  /**
+   * Handle form submit
    * @param {object} userCredentials
    * @return {void} void
    */
   handleSubmit = (userCredentials) => {
-    console.log(userCredentials, 'From Parent');
-    console.log(this.props.alertState, 'From 222');
-    this.props.registerAction(userCredentials);
+    if (this.isValid(userCredentials)) {
+      this.setState({ errors: {} });
+      this.props.registerAction(userCredentials);
+    }
   };
 
   /**
@@ -45,20 +61,19 @@ export class RegisterPage extends Component {
         authType= 'register'
         authSubmit={ this.handleSubmit }
         onAlertClose={ this.onAlertClose }
+        authErrors={ this.state.errors }
       />
     );
   }
 }
 
 RegisterPage.propTypes = {
-  registerState: PropTypes.object.isRequired,
   alertState: PropTypes.object.isRequired,
   registerAction: PropTypes.func.isRequired,
   alertClear: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  registerState: state.registerReducer,
   alertState: state.alertReducer
 });
 

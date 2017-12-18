@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'react-proptypes';
 import { loginAction } from '../../actions/authActions';
 import { alertClear } from '../../actions/alertActions';
+import { validateRequired } from '../../utils/helpers';
 import AuthComponent from '../AuthComponent';
 
 /**
@@ -12,15 +13,33 @@ import AuthComponent from '../AuthComponent';
  * @extends {React.Component}
  */
 export class LoginPage extends Component {
+  state = {
+    errors: {}
+  };
+
   /**
-   * Handle submit
-   * @method handleSubmit
+   * Check form fields valid
+   * @param {object} userCredentials
+   * @returns {boolean} result
+   */
+  isValid({ username, password }) {
+    const checkRequired = validateRequired({ username, password });
+    if (checkRequired.passes === false) {
+      this.setState({ errors: checkRequired.validateMessages });
+    }
+    return checkRequired.passes;
+  }
+
+  /**
+   * Handle form submit
    * @param {object} userCredentials
    * @return {void} void
    */
   handleSubmit = (userCredentials) => {
-    console.log(userCredentials, 'From Parent');
-    this.props.loginAction(userCredentials);
+    if (this.isValid(userCredentials)) {
+      this.setState({ errors: {} });
+      this.props.loginAction(userCredentials);
+    }
   };
 
   /**
@@ -42,21 +61,23 @@ export class LoginPage extends Component {
         authType= 'login'
         authSubmit={ this.handleSubmit }
         onAlertClose={this.onAlertClose}
+        authState={ this.props.loginState}
+        authErrors={ this.state.errors }
       />
     );
   }
 }
 
 LoginPage.propTypes = {
-  loginState: PropTypes.object.isRequired,
   alertState: PropTypes.object.isRequired,
+  loginState: PropTypes.object.isRequired,
   loginAction: PropTypes.func.isRequired,
   alertClear: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  loginState: state.loginReducer,
-  alertState: state.alertReducer
+  alertState: state.alertReducer,
+  loginState: state.loginReducer
 });
 
 const mapDispatchToProps = dispatch =>

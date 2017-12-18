@@ -1,7 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-// const DashboardPlugin = require('npm /plugin');
 
 const PATHS = {
   app: path.join(__dirname, './client/src'),
@@ -23,7 +22,6 @@ module.exports = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    // new DashboardPlugin(),
     new ExtractTextPlugin('styles.css'),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('development')

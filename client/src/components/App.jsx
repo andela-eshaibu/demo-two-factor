@@ -25,9 +25,7 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    history.listen((location, action) => {
-      // console.log(`The current URL is ${location.pathname}${location.search}${location.hash}`);
-      // console.log(`The last navigation action was ${action}`);
+    history.listen(() => {
       this.props.alertClear();
     });
   }
