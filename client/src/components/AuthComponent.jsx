@@ -9,9 +9,10 @@ import Alert from './Common/Alert';
  */
 class AuthComponent extends Component {
   state = {
-    loginDetails: {
+    userDetails: {
       username: '',
-      password: ''
+      password: '',
+      two_factor_token: ''
     }
   };
 
@@ -23,7 +24,7 @@ class AuthComponent extends Component {
    */
   handleSubmit = (event) => {
     event.preventDefault();
-    this.props.authSubmit(this.state.credentials);
+    this.props.authSubmit(this.state.userDetails);
   };
 
   /**
@@ -33,7 +34,7 @@ class AuthComponent extends Component {
    * @return {void} void
    */
   handleChange = (event) => {
-    const credentials = this.state.loginDetails;
+    const credentials = this.state.userDetails;
     credentials[event.target.name] = event.target.value;
     this.setState({ credentials });
   };
@@ -56,19 +57,54 @@ class AuthComponent extends Component {
               onAlertClose={this.props.onAlertClose}
             /> : null
           }
-          <FormField errors={this.props.authErrors}
-                     onChange={ this.handleChange }
-                     value={this.state.loginDetails.username}
-                     name="username"
-                     label='Username'
-          />
-          <FormField type="password"
-                     errors={this.props.authErrors}
-                     onChange={ this.handleChange }
-                     value={this.state.loginDetails.password}
-                     name="password"
-                     label="Password"
-          />
+          {
+            (this.props.authType === 'login') ?
+              <div>
+                <FormField
+                  errors={this.props.authErrors}
+                  onChange={ this.handleChange }
+                  value={this.state.userDetails.username}
+                  name="username"
+                  label='Username'
+                />
+                <FormField
+                  type="password"
+                  errors={this.props.authErrors}
+                  onChange={ this.handleChange }
+                  value={this.state.userDetails.password}
+                  name="password"
+                  label="Password"
+                  />
+                {
+                  (this.props.authState.showOTP === true) ?
+                    <FormField
+                      onChange={ this.handleChange }
+                      value={this.state.userDetails.two_factor_token}
+                      name="two_factor_token"
+                      label='Enter OTP Token'
+                    />
+                    : null
+                }
+              </div>
+            :
+              <div>
+                <FormField
+                  errors={this.props.authErrors}
+                  onChange={ this.handleChange }
+                  value={this.state.userDetails.username}
+                  name="username"
+                  label='Username'
+                />
+                <FormField
+                  type="password"
+                  errors={this.props.authErrors}
+                  onChange={ this.handleChange }
+                  value={this.state.userDetails.password}
+                  name="password"
+                  label="Password"
+                />
+              </div>
+          }
           <div className="form-group lead">
             <div className="offset-sm-3 col-sm-6">
               <button type="submit" className="btn btn-lg btn-primary btn-block">
@@ -102,6 +138,7 @@ class AuthComponent extends Component {
 }
 AuthComponent.propTypes = {
   authErrors: PropTypes.object,
+  authState: PropTypes.object,
   alertState: PropTypes.object.isRequired,
   authType: PropTypes.string.isRequired,
   authSubmit: PropTypes.func.isRequired,
