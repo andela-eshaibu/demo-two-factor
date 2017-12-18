@@ -39,10 +39,13 @@
     "document": true,
     "window": true,
     "localStorage": true,
+    "sessionStorage": true,
     "swal": true,
     "$": true
   },
   "rules": {
+    "react/no-unescaped-entities": 0,
+    "arrow-body-style": 0,
     "one-var": 0,
     "one-var-declaration-per-line": 0,
     "new-cap": 0,

@@ -5,8 +5,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const PATHS = {
   app: path.join(__dirname, './client/src'),
-  build: path.join(__dirname, './client/public'),
-  // styles: path.join(__dirname, './client/src/public/assets/css')
+  build: path.join(__dirname, './client/public')
 };
 
 module.exports = {
@@ -25,10 +24,12 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     // new DashboardPlugin(),
-    // new ExtractTextPlugin('styles.css'),
+    new ExtractTextPlugin('styles.css'),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('development')
+    })
   ],
   devtool: 'eval-source-map',
-
   module: {
     loaders: [
       {
@@ -61,8 +62,6 @@ module.exports = {
     hot: true,
     inline: true,
     stats: 'errors-only',
-    host: process.env.HOST,
-    port: process.env.PORT,
     contentBase: PATHS.build
   },
   externals: {

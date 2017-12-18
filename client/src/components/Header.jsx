@@ -1,16 +1,51 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from 'react-proptypes';
 
-const Header = () => (
+/**
+ * Header component
+ * @param {object} props
+ * @return {XML} JSX
+ */
+const Header = props => (
   <header>
-    <nav>
-      <ul>
-        <li><Link to='/'>Home22</Link></li>
-        <li><Link to='/roster'>Roster</Link></li>
-        <li><Link to='/schedule'>Schedule</Link></li>
-      </ul>
-    </nav>
+    <div className="header clearfix">
+      <nav>
+        {
+          (!sessionStorage.getItem('token') && !sessionStorage.getItem('username')) ?
+            <ul className="nav nav-pills float-right">
+              <li className="nav-item">
+                <Link to="/" className="nav-link">
+                  Home <span className="sr-only">(current)</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/login" className="nav-link">Login</Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/register" className="nav-link">Register</Link>
+              </li>
+            </ul>
+            :
+            <ul className="nav nav-pills float-right">
+              <li className="nav-item">
+                <Link to="/" className="nav-link">
+                  Home <span className="sr-only">(current)</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/register" className="nav-link" onClick={ () => props.handleLogout() }>Logout</Link>
+              </li>
+            </ul>
+        }
+      </nav>
+      <h3>Two factor auth demo</h3>
+    </div>
   </header>
 );
+
+Header.propTypes = {
+  handleLogout: PropTypes.func
+};
 
 export default Header;
